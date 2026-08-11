@@ -18,10 +18,9 @@ const testCaseSchema = new mongoose.Schema(
             required: true
         },
 
-        type: {
-            type: String,
-            enum: ["SAMPLE", "HIDDEN"],
-            required: true
+        isHidden:{
+            type:Boolean,
+            required:true
         }
     },
     {

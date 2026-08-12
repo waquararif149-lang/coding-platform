@@ -21,6 +21,7 @@ const authenticate = (req, res, next) => {
         );
 
         req.user = decoded;
+        req.userId=decoded.userId;
 
         next();
 

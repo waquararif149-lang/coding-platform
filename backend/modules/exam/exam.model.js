@@ -8,20 +8,17 @@ const examSchema = new mongoose.Schema(
             trim: true
         },
 
-        questions: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Question",
-                required: true
-            }
-        ],
+        description: {
+            type: String,
+            required: true,
+            trim: true
+        },
 
-        assignedStudents: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User"
-            }
-        ],
+        duration: {
+            type: Number,
+            required: true,
+            min: 1
+        },
 
         startTime: {
             type: Date,
@@ -31,7 +28,21 @@ const examSchema = new mongoose.Schema(
         endTime: {
             type: Date,
             required: true
-        }
+        },
+
+        students: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User"
+            }
+        ],
+
+        questions: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Question"
+            }
+        ]
     },
     {
         timestamps: true

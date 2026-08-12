@@ -28,6 +28,15 @@ examRouter.get(
 );
 
 examRouter.get(
+    "/:id/result",
+    authenticate,
+    authorize("STUDENT"),
+    examContorler.getStudentExamResult.bind(
+        examContorler
+    )
+);
+
+examRouter.get(
     "/:examId/questions",
     authenticate,
     authorize("STUDENT"),

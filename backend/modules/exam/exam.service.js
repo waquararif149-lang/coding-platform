@@ -1,6 +1,7 @@
 import examRepository from "./exam.repository.js";
 import User from "../user/user.model.js";
 import Question from "../coding/coding.model.js";
+import submissionRepository from "../submission/submission.repository.js";
 class ExamService {
 
     async createExam(examData) {
@@ -163,9 +164,37 @@ class ExamService {
             throw error;
         }
 
-        // Check student assignment
+        await this.validateExamAccess(exam, studentId);
+
+        return exam.questions;
+    }
+
+    async validateStudentQuestionAccess(studentId, questionId) {
+
+        const exam =
+            await examRepository.findExamForStudentAndQuestion(
+                studentId,
+                questionId
+            );
+
+        if (!exam) {
+            const error = new Error(
+                "You are not assigned to this question"
+            );
+
+            error.statusCode = 403;
+            throw error;
+        }
+
+        await this.validateExamAccess(exam, studentId);
+
+        return exam;
+    }
+
+    async validateExamAccess(exam, studentId) {
+
         const isStudentAssigned = exam.students.some(
-            (id) => id.toString() === studentId.toString()
+            id => id.toString() === studentId.toString()
         );
 
         if (!isStudentAssigned) {
@@ -179,7 +208,6 @@ class ExamService {
 
         const currentTime = new Date();
 
-        // Exam hasn't started
         if (currentTime < exam.startTime) {
             const error = new Error(
                 "Exam has not started yet"
@@ -189,7 +217,6 @@ class ExamService {
             throw error;
         }
 
-        // Exam has ended
         if (currentTime > exam.endTime) {
             const error = new Error(
                 "Exam has already ended"
@@ -199,7 +226,99 @@ class ExamService {
             throw error;
         }
 
-        return exam.questions;
+        return exam;
+    }
+
+    async getStudentExamResult(examId, studentId) {
+
+        const exam =
+            await examRepository.findExamQuestions(examId);
+
+        if (!exam) {
+            const error = new Error("Exam not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        // Check student assignment
+        const isStudentAssigned = exam.students.some(
+            id => id.toString() === studentId.toString()
+        );
+
+        if (!isStudentAssigned) {
+            const error = new Error(
+                "You are not assigned to this exam"
+            );
+
+            error.statusCode = 403;
+            throw error;
+        }
+
+        const questionIds = exam.questions.map(
+            question => question._id
+        );
+
+        const submissions =
+            await submissionRepository
+                .findSubmissionsByUserAndQuestions(
+                    studentId,
+                    questionIds
+                );
+
+        // Keep only the latest submission
+        // for each question
+        const latestSubmissions = new Map();
+
+        for (const submission of submissions) {
+
+            const questionId =
+                submission.questionId._id
+                    ? submission.questionId._id.toString()
+                    : submission.questionId.toString();
+
+            if (!latestSubmissions.has(questionId)) {
+                latestSubmissions.set(
+                    questionId,
+                    submission
+                );
+            }
+        }
+
+        const totalQuestions =
+            exam.questions.length;
+
+        const attemptedQuestions =
+            latestSubmissions.size;
+
+        const acceptedQuestions =
+            [...latestSubmissions.values()]
+                .filter(
+                    submission =>
+                        submission.status === "ACCEPTED"
+                )
+                .length;
+
+        return {
+            examId: exam._id,
+
+            totalQuestions,
+
+            attemptedQuestions,
+
+            acceptedQuestions,
+
+            score: acceptedQuestions,
+
+            percentage:
+                totalQuestions === 0
+                    ? 0
+                    : Number(
+                        (
+                            acceptedQuestions /
+                            totalQuestions
+                        ) * 100
+                    ).toFixed(2)
+        };
     }
 }
 

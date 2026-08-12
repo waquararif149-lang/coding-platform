@@ -8,12 +8,6 @@ const submissionSchema = new mongoose.Schema(
             required: true
         },
 
-        examId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Exam",
-            required: true
-        },
-
         questionId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Question",
@@ -22,49 +16,34 @@ const submissionSchema = new mongoose.Schema(
 
         language: {
             type: String,
-            enum: ["JAVASCRIPT", "PYTHON", "JAVA"],
+            required: true,
+            trim: true
+        },
+
+        code: {
+            type: String,
             required: true
         },
 
-        sourceCode: {
-            type: String,
+        totalTests: {
+            type: Number,
+            required: true
+        },
+
+        passedTests: {
+            type: Number,
             required: true
         },
 
         status: {
             type: String,
             enum: [
-                "PENDING",
-                "RUNNING",
                 "ACCEPTED",
                 "WRONG_ANSWER",
-                "COMPILATION_ERROR",
                 "RUNTIME_ERROR",
-                "TIME_LIMIT_EXCEEDED",
-                "MEMORY_LIMIT_EXCEEDED",
-                "FAILED"
+                "COMPILATION_ERROR"
             ],
-            default: "PENDING"
-        },
-
-        executionResult: {
-            type: mongoose.Schema.Types.Mixed,
-            default: null
-        },
-
-        passedTests: {
-            type: Number,
-            default: 0
-        },
-
-        totalTests: {
-            type: Number,
-            default: 0
-        },
-
-        score: {
-            type: Number,
-            default: 0
+            required: true
         }
     },
     {
@@ -72,6 +51,9 @@ const submissionSchema = new mongoose.Schema(
     }
 );
 
-const Submission = mongoose.model("Submission", submissionSchema);
+const Submission = mongoose.model(
+    "Submission",
+    submissionSchema
+);
 
 export default Submission;

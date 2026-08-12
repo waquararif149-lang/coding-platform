@@ -6,6 +6,8 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 import authRouter from "./modules/auth/auth.routes.js";
 import testcaseRouter from "./modules/testcase/testcase.routes.js";
 import examRouter from "./modules/exam/exam.routes.js";
+import executionRouter from "./modules/execution/execution.routes.js";
+import submissionRouter from "./modules/submission/submisson.routes.js";
 
 
 const app = express();
@@ -20,6 +22,8 @@ app.use("/api/questions",codingRouter);
 app.use("/api/auth",authRouter);
 app.use("/api/testcases",testcaseRouter);
 app.use("/api/exams",examRouter);
+app.use("/api/execution",executionRouter);
+app.use("/api/submissions",submissionRouter);
 
 app.get("/api/health", (req, res) => {
     res.status(200).json({

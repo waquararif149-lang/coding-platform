@@ -136,6 +136,26 @@ class ExamController {
             next(error);
         }
     }
+
+    async getStudentExamResult(req, res, next) {
+
+    try {
+
+        const result =
+            await examService.getStudentExamResult(
+                req.params.id,
+                req.user.userId
+            );
+
+        return res.status(200).json({
+            success: true,
+            data: result
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}
 }
 
 export default new ExamController();

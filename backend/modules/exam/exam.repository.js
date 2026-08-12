@@ -74,6 +74,13 @@ class ExamRepository {
         return await Exam.findById(examId)
             .populate("questions");
     }
+
+    async findExamForStudentAndQuestion(studentId, questionId) {
+      return await Exam.findOne({
+        students: studentId,
+        questions: questionId
+      });
+    }
 }
 
 export default new ExamRepository();

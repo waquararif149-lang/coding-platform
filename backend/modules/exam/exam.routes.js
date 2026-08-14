@@ -16,8 +16,7 @@ import {
 
 const examRouter = express.Router();
 
-
-// ==================== STUDENT ====================
+// Student routes
 
 // Get exams assigned to logged-in student
 examRouter.get(
@@ -43,8 +42,23 @@ examRouter.get(
     examContorler.getExamQuestions.bind(examContorler)
 );
 
+// Check if exam is already completed
+examRouter.get(
+    "/:examId/status",
+    authenticate,
+    authorize("STUDENT"),
+    examContorler.getExamCompletionStatus.bind(examContorler)
+);
 
-// ==================== ADMIN ====================
+// Submit exam (mark as completed)
+examRouter.post(
+    "/:examId/submit",
+    authenticate,
+    authorize("STUDENT"),
+    examContorler.submitExam.bind(examContorler)
+);
+
+// Admin routes
 
 // Create exam
 examRouter.post(

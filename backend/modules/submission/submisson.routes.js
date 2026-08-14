@@ -12,8 +12,7 @@ import {
 
 const submissionRouter = express.Router();
 
-
-// ==================== STUDENT ====================
+// Student routes
 
 // Get my submissions
 submissionRouter.get(
@@ -38,8 +37,7 @@ submissionRouter.post(
     )
 );
 
-
-// ==================== ADMIN ====================
+// Admin routes
 
 // Get all submissions
 submissionRouter.get(
@@ -50,9 +48,6 @@ submissionRouter.get(
         submissionControler
     )
 );
-
-
-// ==================== STUDENT ====================
 
 // Get submission by ID
 submissionRouter.get(

@@ -42,6 +42,19 @@ const examSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Question"
             }
+        ],
+
+        completedBy: [
+            {
+                userId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User"
+                },
+                completedAt: {
+                    type: Date,
+                    default: Date.now
+                }
+            }
         ]
     },
     {

@@ -65,7 +65,8 @@ class ExamRepository {
                 description: 1,
                 duration: 1,
                 startTime: 1,
-                endTime: 1
+                endTime: 1,
+                questions:1
             }
         );
     }

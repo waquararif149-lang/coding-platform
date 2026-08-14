@@ -155,7 +155,43 @@ class ExamController {
     } catch (error) {
         next(error);
     }
-}
+    }
+
+    async getExamCompletionStatus(req, res, next) {
+        try {
+            const isCompleted = 
+                await examService.isExamCompleted(
+                    req.params.examId,
+                    req.userId
+                );
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    isCompleted
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async submitExam(req, res, next) {
+        try {
+            const exam = await examService.submitExam(
+                req.params.examId,
+                req.userId
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Exam submitted successfully",
+                data: exam
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new ExamController();

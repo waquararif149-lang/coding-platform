@@ -2,6 +2,7 @@ import submissionRepository from "./submission.repository.js";
 
 import executionService from "../execution/execution.service.js";
 import examService from "../exam/exam.service.js";
+import examRepository from "../exam/exam.repository.js";
 
 
 class SubmissionService {
@@ -18,14 +19,31 @@ class SubmissionService {
 
     }) {
 
-        await examService.validateStudentQuestionAccess(
+        // Get the exam that contains this question
+        const exam = await examRepository.findExamForStudentAndQuestion(
             userId,
             questionId
         );
 
-        // ==========================================
-        // Execute student's code
-        // ==========================================
+        if (exam) {
+            // Check if exam is already completed
+            const isCompleted = exam.completedBy.some(
+                item => item.userId.toString() === userId.toString()
+            );
+
+            if (isCompleted) {
+                const error = new Error(
+                    "You have already submitted this exam. You cannot submit again."
+                );
+                error.statusCode = 400;
+                throw error;
+            }
+        }
+
+        await examService.validateStudentQuestionAccess(
+            userId,
+            questionId
+        );
 
         const executionResult =
             await executionService.executeQuestion({
@@ -36,11 +54,6 @@ class SubmissionService {
 
                 code
             });
-
-
-        // ==========================================
-        // Save submission
-        // ==========================================
 
         const submission =
             await submissionRepository.createSubmission({
@@ -62,11 +75,6 @@ class SubmissionService {
                 status:
                     executionResult.status
             });
-
-
-        // ==========================================
-        // Return safe response
-        // ==========================================
 
         return {
 

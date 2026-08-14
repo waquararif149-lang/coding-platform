@@ -320,6 +320,71 @@ class ExamService {
                     ).toFixed(2)
         };
     }
+
+    async isExamCompleted(examId, studentId) {
+
+        const exam = 
+            await examRepository.findExamById(examId);
+
+        if (!exam) {
+            const error = new Error("Exam not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const isCompleted = exam.completedBy.some(
+            item => item.userId.toString() === studentId.toString()
+        );
+
+        return isCompleted;
+    }
+
+    async submitExam(examId, studentId) {
+        const exam = 
+            await examRepository.findExamById(examId);
+
+        if (!exam) {
+            const error = new Error("Exam not found");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const isCompleted = exam.completedBy.some(
+            item => item.userId.toString() === studentId.toString()
+        );
+
+        if (isCompleted) {
+            const error = new Error(
+                "You have already submitted this exam. You cannot submit again."
+            );
+            error.statusCode = 400;
+            throw error;
+        }
+
+        const isStudentAssigned = exam.students.some(
+            id => id.toString() === studentId.toString()
+        );
+
+        if (!isStudentAssigned) {
+            const error = new Error(
+                "You are not assigned to this exam"
+            );
+            error.statusCode = 403;
+            throw error;
+        }
+
+        exam.completedBy.push({
+            userId: studentId,
+            completedAt: new Date()
+        });
+
+        return await examRepository.updateExam(
+            examId,
+            {
+                completedBy: exam.completedBy
+            }
+        );
+    }
 }
 
 export default new ExamService();

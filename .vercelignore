@@ -1,0 +1,10 @@
+backend
+.git
+.gitignore
+README.md
+docs
+node_modules
+.env
+.env.local
+.DS_Store
+*.md

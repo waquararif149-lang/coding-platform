@@ -1,7 +1,8 @@
 {
-  "name": "vite-project",
+  "name": "coding-platform-frontend",
+  "description": "Coding Platform Frontend Application",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -51,12 +51,18 @@ Template for environment variables (copy to `.env` locally)
 ## Environment Variables
 
 ### Add to Vercel Dashboard:
-- `VITE_API_URL`: Your backend API URL (e.g., `https://your-api.com`)
+- `VITE_API_URL`: `https://coding-platform-gdib.onrender.com/api`
 
-### Example for Local Development:
-Create `frontend/.env.local`:
+### Local Development:
+Frontend automatically uses `.env` file:
 ```
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=https://coding-platform-gdib.onrender.com/api
+```
+
+### Production Build:
+Frontend uses `.env.production` file:
+```
+VITE_API_URL=https://coding-platform-gdib.onrender.com/api
 ```
 
 ## Build Troubleshooting
